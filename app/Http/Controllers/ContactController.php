@@ -14,7 +14,7 @@ class ContactController extends Controller
      */
     public function index()
     {
-        return Contact::all();
+        return Contact::where('user_id', auth()->id())->get();
     }
 
     /**
@@ -29,7 +29,13 @@ class ContactController extends Controller
             'name' => 'required'
         ]);
 
-        return Contact::create($request->all());
+        return Contact::create([
+            'name'=> $request->name,
+            'celular'=> $request->celular,
+            'whatsapp'=> $request->whatsapp,
+            'email'=>$request->email,
+            'user_id' => auth()->id(),
+        ]);
     }
 
     /**
@@ -40,7 +46,8 @@ class ContactController extends Controller
      */
     public function show($id)
     {
-        return Contact::findOrFail($id);
+        return Contact::where('id',$id)->where('user_id',auth()->id())->firstOrFail();
+
     }
 
     /**
@@ -52,9 +59,14 @@ class ContactController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $contact = Contact::findOrFail($id);
+        $contact = Contact::where('id',$id)->where('user_id',auth()->id())->firstOrFail();
 
-        $contact->update($request->all());
+        $contact->update([
+            'name'=> $request->name,
+            'celular'=> $request->celular,
+            'whatsapp'=> $request->whatsapp,
+            'email'=>$request->email,
+        ]);
 
         return $contact;
 
@@ -68,6 +80,8 @@ class ContactController extends Controller
      */
     public function destroy($id)
     {
-        Contact::destroy($id);
+        $contact = Contact::where('id',$id)->where('user_id',auth()->id())->firstOrFail();
+
+        $contact->destroy($id);
     }
 }
