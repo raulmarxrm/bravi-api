@@ -29,13 +29,19 @@ class ContactController extends Controller
             'name' => 'required'
         ]);
 
-        return Contact::create([
+        $contact = Contact::create([
             'name'=> $request->name,
             'celular'=> $request->celular,
             'whatsapp'=> $request->whatsapp,
             'email'=>$request->email,
             'user_id' => auth()->id(),
         ]);
+        $response=[
+            'contact'=>$contact            
+        ];
+
+        return response($response, 201);
+
     }
 
     /**
@@ -68,7 +74,11 @@ class ContactController extends Controller
             'email'=>$request->email,
         ]);
 
-        return $contact;
+        $response=[
+            'contact'=>$contact            
+        ];
+
+        return response($response, 201);
 
     }
 
@@ -83,5 +93,11 @@ class ContactController extends Controller
         $contact = Contact::where('id',$id)->where('user_id',auth()->id())->firstOrFail();
 
         $contact->destroy($id);
+
+        $response=[
+            'contact'=>$contact            
+        ];
+
+        return response($response, 201);
     }
 }
